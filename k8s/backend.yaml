@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: estore-backend:latest
+          ports:
+            - containerPort: 5000
+          env:
+            - name: MONGO_URI
+              value: "mongodb://admin:password@mongodb:27017/estore?authSource=admin"
+            - name: JWT_SECRET
+              value: "your_jwt_secret"
+            - name: STRIPE_SECRET_KEY
+              value: "sk_test_your_stripe_key"
+            - name: EMAIL_USER
+              value: "your_email@gmail.com"
+            - name: EMAIL_PASS
+              value: "your_email_password"
+            - name: ADMIN_EMAIL
+              value: "admin@estore.com"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+spec:
+  selector:
+    app: backend
+  ports:
+    - port: 5000
+      targetPort: 5000
+  type: ClusterIP
