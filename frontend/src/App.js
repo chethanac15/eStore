@@ -19,9 +19,9 @@ function App() {
     <Router>
       <AuthProvider>
         <CartProvider>
-          <div className="app">
+          <div className="flex flex-col min-h-screen bg-background">
             <Header />
-            <main className="main-content">
+            <main className="flex-1 w-full max-w-[1400px] mx-auto px-4 py-8">
               <Routes>
                 <Route path="/" element={<Landing />} />
                 <Route path="/product/:id" element={<ProductDetail />} />
