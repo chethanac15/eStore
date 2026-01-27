@@ -59,13 +59,72 @@ This document outlines the technical issues that have been resolved to improve t
 
 ---
 
+## Issue 3: Missing Products Page
+
+**Status**: ✅ Resolved  
+**Component(s) Affected**: `pages/Products.js`, `Header.js`, `App.js`
+
+### 🔴 The Problem
+*   The application lacked a dedicated page to browse all products.
+*   Users could not filter (e.g. by Category), sort, or search products.
+*   No pagination available, making large product lists unmanageable.
+*   Product link in Header was broken or just a placeholder.
+
+### 🟢 The Solution
+1.  **Dedicated Products Page**:
+    *   Created `src/pages/Products.js`.
+    *   Implemented **Sidebar Filters** for Categories.
+    *   Added **Search Bar** with real-time text filtering.
+    *   Added **Sorting Options** (Price Low/High, Newest, Name).
+    *   Implemented **Pagination** (12 items per page).
+2.  **Navigation**:
+    *   Linked `/products` in the Header.
+    *   Added new Route in `App.js`.
+3.  **UI/UX**:
+    *   Skeleton loading states for better perceived performance.
+    *   Responsive design (sidebar collapses/stacks on mobile).
+
+### ✔️ Verification
+*   Navigate to `/products`.
+*   Filter by "Electronics" -> List updates.
+*   Search "Headphones" -> Only matches appear.
+*   Sort by Price -> Order changes correctly.
+
+---
+
+## Issue 4: Lack of User Action Feedback
+
+**Status**: ✅ Resolved  
+**Component(s) Affected**: `CartContext.js`, `AuthContext.js`
+
+### 🔴 The Problem
+*   Silent failures or successes when performing key actions.
+*   Clicking "Add to Cart" gave no confirmation, leaving users unsure if it worked.
+*   Logging out happened instantly without confirming the action was successful.
+
+### 🟢 The Solution
+1.  **Cart Feedback**:
+    *   Updated `addToCart` in `CartContext.js`.
+    *   Triggers a **Green Toast** saying "Added [Product] to cart" on success.
+    *   Triggers "Updated quantity" if item already exists.
+2.  **Auth Feedback**:
+    *   Updated `logout` in `AuthContext.js`.
+    *   Shows "Logged out successfully" toast on exit.
+
+### ✔️ Verification
+*   Click "Add to Cart" -> See green toast verification.
+*   Click "Logout" -> See "Logged out successfully" message.
+
+---
+
 ## Technical Stack Additions
 *   **`react-hot-toast`**: For toast notifications.
 *   **`lucide-react`**: For UI icons (Check, AlertCircle, X).
-*   **`@testing-library/react`**: Enhanced testing suite for validation logic.
+*   **`@testing-library/react`**: Enhanced testing suite.
+*   **`framer-motion`**: Used for smooth product card animations.
 
-## How to Test
-1.  Navigate to `/register`.
-2.  Type "Jo" in Name -> **Red Border + Error Message**.
-3.  Type "valid@email.com" -> **Green Border + Checkmark**.
-4.  Type a password -> Watch **Strength Meter** update live.
+## How to Test Full Flow
+1.  **Register/Login**: Use valid credentials (feedback: Green V checkmarks, Button enables).
+2.  **Browse**: Go to `/products`, use strict filters to find an item.
+3.  **Cart**: Click "Add to Cart" -> **Toast appears**.
+4.  **Logout**: Click user menu -> Logout -> **Toast appears**.

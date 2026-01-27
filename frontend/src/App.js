@@ -6,6 +6,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import Landing from './pages/Landing';
 import ProductDetail from './pages/ProductDetail';
+import Products from './pages/Products';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Orders from './pages/Orders';
@@ -44,6 +45,7 @@ function App() {
               <main className="flex-1 w-full max-w-[1400px] mx-auto px-4 py-8">
                 <Routes>
                   <Route path="/" element={<Landing />} />
+                  <Route path="/products" element={<Products />} />
                   <Route path="/product/:id" element={<ProductDetail />} />
                   <Route path="/cart" element={<Cart />} />
                   <Route path="/checkout" element={<Checkout />} />
