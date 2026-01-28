@@ -150,4 +150,23 @@ router.get('/profile', require('../middleware/auth').auth, async (req, res) => {
   }
 });
 
+// @desc    Get all users (Admin only)
+// @route   GET /api/auth/users
+// @access  Private/Admin
+router.get('/users', require('../middleware/auth').auth, require('../middleware/auth').admin, async (req, res) => {
+  try {
+    const users = await User.find().select('-password').sort({ createdAt: -1 });
+    res.json({
+      success: true,
+      data: users
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+});
+
 module.exports = router;
