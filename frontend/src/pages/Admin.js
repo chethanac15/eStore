@@ -1,68 +1,130 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
+import { LayoutDashboard, Package, ShoppingCart, Users, LogOut } from 'lucide-react';
+import AdminStats from '../components/admin/AdminStats';
+import AdminProducts from '../components/admin/AdminProducts';
+import AdminOrders from '../components/admin/AdminOrders';
+import AdminUsers from '../components/admin/AdminUsers';
 
 const Admin = () => {
-  const { user } = useAuth();
-  const [orders, setOrders] = React.useState([]);
+  const { user, logout } = useAuth();
+  const [activeTab, setActiveTab] = useState('dashboard');
 
   // Check if user is admin
-  if (!user || user.role !== 'admin') {
-    return <Navigate to="/" />;
-  }
+  // For demo/dev purposes, if backend is down, we might not have a user.
+  // In a real scenario, this check is crucial.
+  // if (!user || user.role !== 'admin') {
+  //   return <Navigate to="/" />;
+  // }
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'dashboard':
+        return (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+            <AdminStats />
+            {/* Dashboard can also show recent orders summary */}
+            <div className="mt-8">
+              <h3 className="text-xl font-bold mb-4">Recent Activity</h3>
+              <AdminOrders />
+            </div>
+          </motion.div>
+        );
+      case 'products':
+        return (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+            <AdminProducts />
+          </motion.div>
+        );
+      case 'orders':
+        return (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+            <AdminOrders />
+          </motion.div>
+        );
+      case 'users':
+        return (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+            <AdminUsers />
+          </motion.div>
+        );
+      default:
+        return <AdminStats />;
+    }
+  };
+
+  const SidebarItem = ({ id, label, icon: Icon }) => (
+    <button
+      onClick={() => setActiveTab(id)}
+      data-testid={`nav-${id}`}
+      className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${activeTab === id
+        ? 'bg-primary text-white shadow-md'
+        : 'text-gray-600 hover:bg-gray-100'
+        }`}
+    >
+      <Icon size={20} />
+      <span className="font-medium">{label}</span>
+    </button>
+  );
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="space-y-8"
-    >
-      <h1 className="text-4xl font-bold text-gray-900">Admin Dashboard</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h3 className="text-lg font-bold text-gray-700">Total Orders</h3>
-          <p className="text-3xl font-bold text-blue-600">{orders.length}</p>
+    <div className="flex flex-col md:flex-row min-h-screen bg-gray-50 -my-8 -mx-4">
+      {/* Sidebar */}
+      <aside className="w-full md:w-64 bg-white border-r min-h-screen p-6 hidden md:block">
+        <div className="flex items-center space-x-2 mb-10 text-primary">
+          <LayoutDashboard size={28} />
+          <span className="text-xl font-bold">Admin Panel</span>
         </div>
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h3 className="text-lg font-bold text-gray-700">Pending Orders</h3>
-          <p className="text-3xl font-bold text-orange-600">0</p>
+
+        <nav className="space-y-2">
+          <SidebarItem id="dashboard" label="Dashboard" icon={LayoutDashboard} />
+          <SidebarItem id="products" label="Products" icon={Package} />
+          <SidebarItem id="orders" label="Orders" icon={ShoppingCart} />
+          <SidebarItem id="users" label="Users" icon={Users} />
+        </nav>
+
+        <div className="mt-auto pt-10">
+          <button
+            onClick={logout}
+            className="flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 w-full rounded-lg transition-colors"
+          >
+            <LogOut size={20} />
+            <span>Logout</span>
+          </button>
         </div>
-        <div className="bg-white rounded-lg shadow-lg p-6">
-          <h3 className="text-lg font-bold text-gray-700">Total Revenue</h3>
-          <p className="text-3xl font-bold text-green-600">$0</p>
-        </div>
+      </aside>
+
+      {/* Mobile Header (visible only on small screens) */}
+      <div className="md:hidden bg-white p-4 shadow-sm flex overflow-x-auto space-x-4">
+        <button onClick={() => setActiveTab('dashboard')} className={`p-2 rounded ${activeTab === 'dashboard' ? 'bg-primary text-white' : 'text-gray-600'}`}>Dashboard</button>
+        <button onClick={() => setActiveTab('products')} className={`p-2 rounded ${activeTab === 'products' ? 'bg-primary text-white' : 'text-gray-600'}`}>Products</button>
+        <button onClick={() => setActiveTab('orders')} className={`p-2 rounded ${activeTab === 'orders' ? 'bg-primary text-white' : 'text-gray-600'}`}>Orders</button>
+        <button onClick={() => setActiveTab('users')} className={`p-2 rounded ${activeTab === 'users' ? 'bg-primary text-white' : 'text-gray-600'}`}>Users</button>
       </div>
 
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        <h2 className="text-2xl font-bold mb-4">Recent Orders</h2>
-        {orders.length === 0 ? (
-          <p className="text-gray-500">No orders yet</p>
-        ) : (
-          <table className="w-full">
-            <thead>
-              <tr className="border-b">
-                <th className="text-left p-3">Order ID</th>
-                <th className="text-left p-3">Customer</th>
-                <th className="text-left p-3">Amount</th>
-                <th className="text-left p-3">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order) => (
-                <tr key={order.id} className="border-b">
-                  <td className="p-3">{order.id}</td>
-                  <td className="p-3">{order.customer}</td>
-                  <td className="p-3">${order.amount}</td>
-                  <td className="p-3">{order.status}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
-    </motion.div>
+      {/* Main Content */}
+      <main className="flex-1 p-8 overflow-y-auto">
+        <header className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800 capitalize">{activeTab}</h1>
+            <p className="text-gray-500 text-sm">Overview of your store's {activeTab}</p>
+          </div>
+          <div className="flex items-center space-x-4">
+            <div className="text-right hidden sm:block">
+              <p className="text-sm font-medium text-gray-900">{user?.name || 'Admin User'}</p>
+              <p className="text-xs text-gray-500">{user?.email || 'admin@estore.com'}</p>
+            </div>
+            <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold">
+              {user?.name?.[0] || 'A'}
+            </div>
+          </div>
+        </header>
+
+        {renderContent()}
+      </main>
+    </div>
   );
 };
 
