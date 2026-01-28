@@ -2,9 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useCart } from '../contexts/CartContext';
+import { useWishlist } from '../contexts/WishlistContext';
+import { Heart } from 'lucide-react';
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
+  const { addToWishlist, isInWishlist } = useWishlist();
 
   const handleAddToCart = (e) => {
     e.preventDefault();
@@ -12,11 +15,19 @@ const ProductCard = ({ product }) => {
     addToCart(product);
   };
 
+  const handleWishlistToggle = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addToWishlist(product);
+  };
+
+  const isLiked = isInWishlist(product._id);
+
   return (
     <motion.div
       whileHover={{ y: -5 }}
       transition={{ duration: 0.2 }}
-      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow"
+      className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow group relative"
     >
       <Link to={`/product/${product._id}`}>
         <div className="relative overflow-hidden bg-gray-100">
@@ -31,10 +42,21 @@ const ProductCard = ({ product }) => {
             }}
           />
           {!product.inStock && (
-            <div className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded text-sm">
+            <div className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-sm z-10">
               Out of Stock
             </div>
           )}
+
+          <button
+            onClick={handleWishlistToggle}
+            className="absolute top-2 right-2 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-sm hover:bg-white transition-all z-20"
+            aria-label={isLiked ? "Remove from wishlist" : "Add to wishlist"}
+          >
+            <Heart
+              size={20}
+              className={`transition-colors ${isLiked ? 'fill-red-500 text-red-500' : 'text-gray-500 hover:text-red-500'}`}
+            />
+          </button>
         </div>
         <div className="p-4">
           <h3 className="text-lg font-semibold text-gray-800 mb-2 line-clamp-2">
@@ -48,11 +70,9 @@ const ProductCard = ({ product }) => {
               ${product.price.toFixed(2)}
             </span>
             <div className="flex items-center">
-              <svg className="w-4 h-4 text-warning fill-current" viewBox="0 0 24 24">
-                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-              </svg>
-              <span className="text-sm text-gray-600 ml-1">
-                {product.rating} ({product.reviews})
+              <span className="text-yellow-400 mr-1">★</span>
+              <span className="text-sm text-gray-600">
+                {product.averageRating || product.rating || 0} ({product.numOfReviews || product.reviews || 0})
               </span>
             </div>
           </div>

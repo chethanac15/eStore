@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
+import { useWishlist } from '../contexts/WishlistContext';
 import {
   ShoppingBag,
   Search,
@@ -23,6 +24,7 @@ const Header = () => {
 
   const { user, logout } = useAuth();
   const { getCartItemsCount } = useCart();
+  const { wishlist } = useWishlist();
   const navigate = useNavigate();
   const location = useLocation();
   const userMenuRef = useRef(null);
@@ -91,8 +93,8 @@ const Header = () => {
                 key={link.name}
                 to={link.path}
                 className={`text-sm font-medium transition-colors hover:text-primary ${location.pathname === link.path
-                    ? 'text-primary'
-                    : 'text-gray-600'
+                  ? 'text-primary'
+                  : 'text-gray-600'
                   }`}
               >
                 {link.name}
@@ -104,8 +106,8 @@ const Header = () => {
               <Link
                 to="/admin"
                 className={`flex items-center space-x-1 text-sm font-medium px-3 py-1 rounded-full ${location.pathname.startsWith('/admin')
-                    ? 'bg-purple-100 text-purple-700'
-                    : 'text-purple-600 hover:bg-purple-50'
+                  ? 'bg-purple-100 text-purple-700'
+                  : 'text-purple-600 hover:bg-purple-50'
                   }`}
               >
                 <LayoutDashboard size={16} />
@@ -130,6 +132,15 @@ const Header = () => {
 
           {/* 4. Actions (Cart, User, Mobile Toggle) */}
           <div className="flex items-center space-x-2 md:space-x-4">
+            {/* Wishlist Icon */}
+            <Link to="/wishlist" className="relative p-2 text-gray-600 hover:text-primary transition-colors hover:bg-gray-50 rounded-full">
+              <Heart size={24} />
+              {wishlist.length > 0 && (
+                <span className="absolute top-1 right-0 bg-red-500 text-white text-[10px] font-bold h-5 w-5 flex items-center justify-center rounded-full border-2 border-white shadow-sm">
+                  {wishlist.length}
+                </span>
+              )}
+            </Link>
             {/* Cart Icon */}
             <Link to="/cart" className="relative p-2 text-gray-600 hover:text-primary transition-colors hover:bg-gray-50 rounded-full">
               <ShoppingBag size={24} />
@@ -259,8 +270,8 @@ const Header = () => {
                   key={link.name}
                   to={link.path}
                   className={`px-4 py-3 rounded-lg text-sm font-medium ${location.pathname === link.path
-                      ? 'bg-primary/10 text-primary'
-                      : 'text-gray-600 hover:bg-gray-50'
+                    ? 'bg-primary/10 text-primary'
+                    : 'text-gray-600 hover:bg-gray-50'
                     }`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
