@@ -1,5 +1,6 @@
 const express = require('express');
 const Product = require('../models/Product');
+const Review = require('../models/Review');
 const { auth, admin } = require('../middleware/auth');
 
 const router = express.Router();
@@ -67,9 +68,20 @@ router.get('/:id', async (req, res) => {
       });
     }
 
+    const reviews = await Review.find({ product: req.params.id }).populate('user', 'name');
+    const relatedProducts = await Product.find({
+      category: product.category,
+      _id: { $ne: product._id },
+      isActive: true
+    }).limit(4);
+
+    const productObj = product.toObject();
+    productObj.reviews = reviews;
+    productObj.relatedProducts = relatedProducts;
+
     res.json({
       success: true,
-      data: product
+      data: productObj
     });
   } catch (error) {
     console.error(error);

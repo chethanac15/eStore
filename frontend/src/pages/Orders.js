@@ -5,7 +5,7 @@ import { TableRowSkeleton } from '../components/SkeletonLoader';
 
 const Orders = () => {
   const { isAuthenticated } = useAuth();
-  const [orders, setOrders] = React.useState([]);
+  const [orders] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {

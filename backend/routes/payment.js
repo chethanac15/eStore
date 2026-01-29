@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../middleware/auth');
+const { auth } = require('../middleware/auth');
 // Use test key if not provided for finding bugs/testing flow (won't actually process)
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
