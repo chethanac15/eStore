@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
-import { Navigate } from 'react-router-dom';
+
 import { LayoutDashboard, Package, ShoppingCart, Users, LogOut } from 'lucide-react';
 import AdminStats from '../components/admin/AdminStats';
 import AdminProducts from '../components/admin/AdminProducts';

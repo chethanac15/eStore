@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
 const Review = require('../models/Review');
-const auth = require('../middleware/auth');
+const { auth } = require('../middleware/auth');
 
 // @route   GET /api/reviews/:productId
 // @desc    Get reviews for a product

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useLocation } from 'react-router-dom';
+
 import ProductCard from '../components/ProductCard';
 import { ProductCardSkeleton } from '../components/SkeletonLoader';
 import CategoryFilter from '../components/CategoryFilter';
@@ -20,7 +20,7 @@ const Products = () => {
 
     // Filters
     const [selectedCategory, setSelectedCategory] = useState('All');
-    const [priceRange, setPriceRange] = useState([0, 2000]);
+    const [priceRange] = useState([0, 2000]);
     const [sortBy, setSortBy] = useState('newest');
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -28,7 +28,7 @@ const Products = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 12;
 
-    const location = useLocation();
+
 
     useEffect(() => {
         // Initial load

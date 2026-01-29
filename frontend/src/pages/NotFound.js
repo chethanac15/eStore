@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Home, ShoppingBag, HelpCircle, ArrowLeft } from 'lucide-react';
+import { Home, ShoppingBag, HelpCircle } from 'lucide-react';
 
 const NotFound = () => {
     return (
